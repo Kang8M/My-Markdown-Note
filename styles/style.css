@@ -1,6 +1,12 @@
 body {
   margin: 20px;
   background: #343d4e;
+  color: #fff;
+}
+
+.light-mode {
+  background-color: #fff;
+  color: #343d4e;
 }
 
 #editor {
@@ -21,15 +27,23 @@ body {
   background: #202530;
   border: none;
   border-radius: 8px 0 0 8px;
-  color: #fff;
+  color: inherit;
   outline: none;
   resize: none;
+}
+
+.light-markdown-content {
+  background: #CCC !important;
 }
 
 #html-preview {
   background: #242a36;
   border-radius: 0 8px 8px 0;
-  color: #fff;
+  color: inherit;
+}
+
+.light-html-preview {
+  background: #DDD !important;
 }
 
 #mode {
@@ -44,21 +58,26 @@ body {
   top: 20px;
   right: 20px;
   background: #2e3440;
-  color: #fff;
+  color: inherit;
   border: none;
   border-radius: 8px;
   padding: 8px 16px;
   font-weight: 700;
   cursor: pointer;
 }
+
+/* Begin functions */
 
 #functions {
   margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
 }
 
-#open, #restore, #save, #new {
-  background: #2e3440;
-  color: #fff;
+.btn {
   border: none;
   border-radius: 8px;
   padding: 8px 16px;
@@ -66,9 +85,26 @@ body {
   cursor: pointer;
 }
 
-#expand-mode:hover, #open:hover, #restore:hover, #save:hover {
+#open, #restore, #save, #new, #theme-mode {
+  background: #2e3440;
+  color: inherit;
+}
+
+#theme-mode {
+  background: #fff;
+  color: #2e3440;
+}
+
+.btn-light-mode {
+  background: #2e3440 !important;
+  color: #fff !important;
+}
+
+#expand-mode:hover, #open:hover, #restore:hover, #save:hover, #theme-mode:hover {
   color: orange;
 }
+
+/* End functions */
 
 #editor.distraction-free {
   width: 100%;

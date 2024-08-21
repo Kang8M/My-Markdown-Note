@@ -5,8 +5,23 @@ const newButton = document.getElementById('new');
 const markdownContent = document.getElementById('markdown-content');
 const expandButton = document.getElementById('expand-mode');
 const htmlPreview = document.getElementById('html-preview');
+const themeModeButton = document.getElementById('theme-mode');
 const editor = document.getElementById('editor');
 let fileHandle;
+
+function lightMode() {
+  var element = document.body;
+  element.classList.toggle("light-mode");
+  themeModeButton.classList.toggle('btn-light-mode');
+  restoreButton.classList.toggle('btn-light-mode');
+  openButton.classList.toggle('btn-light-mode');
+  saveButton.classList.toggle('btn-light-mode');
+  newButton.classList.toggle('btn-light-mode');
+  expandButton.classList.toggle('btn-light-mode');
+  themeModeButton.innerText = themeModeButton.innerText === 'Light' ? 'Dark' : 'Light';
+  markdownContent.classList.toggle('light-markdown-content');
+  htmlPreview.classList.toggle('light-html-preview');
+}
 
 function parseHtmlPreview(text) {
   const htmlContent = marked.parse(text);
@@ -15,11 +30,7 @@ function parseHtmlPreview(text) {
 
 function expandFile() {
   editor.classList.toggle('distraction-free');
-  if (expandButton.innerText === 'Full Mode') {
-    expandButton.innerText = 'Minimize Mode';
-  } else {
-    expandButton.innerText = 'Full Mode';
-  }
+  expandButton.innerText = expandButton.innerText === 'Full Mode' ? 'Minimize Mode' : 'Full Mode'; 
 }
 
 async function newFile() {
@@ -114,6 +125,7 @@ async function init() {
   saveButton.addEventListener('click', saveFile);
   expandButton.addEventListener('click', expandFile);
   newButton.addEventListener('click', newFile);
+  themeModeButton.addEventListener('click', lightMode);
 }
 
 markdownContent.addEventListener('input', function() {
