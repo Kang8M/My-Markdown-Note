@@ -1,9 +1,32 @@
 const restoreButton = document.getElementById('restore');
 const openButton = document.getElementById('open');
 const saveButton = document.getElementById('save');
-const editor = document.getElementById('markdown-content');
-const expand = document.getElementById('expand-mode');
+const newButton = document.getElementById('new');
+const markdownContent = document.getElementById('markdown-content');
+const expandButton = document.getElementById('expand-mode');
+const htmlPreview = document.getElementById('html-preview');
+const editor = document.getElementById('editor');
 let fileHandle;
+
+function parseHtmlPreview(text) {
+  const htmlContent = marked.parse(text);
+  htmlPreview.innerHTML = DOMPurify.sanitize(htmlContent, {USE_PROFILES: {html: true}});
+}
+
+function expandFile() {
+  editor.classList.toggle('distraction-free');
+  if (expandButton.innerText === 'Full Mode') {
+    expandButton.innerText = 'Minimize Mode';
+  } else {
+    expandButton.innerText = 'Full Mode';
+  }
+}
+
+async function newFile() {
+  markdownContent.value = '';
+  htmlPreview.innerHTML = '';
+  await removeFile();
+}
 
 async function openFile() {
   try {
@@ -14,23 +37,28 @@ async function openFile() {
   }
 }
 
+async function removeFile() {
+  fileHandle = undefined;
+  await idbKeyval.del('file');
+}
+
 async function restoreFromFile() {
   let file = await fileHandle.getFile();
   let text = await file.text();
   await idbKeyval.set('file', fileHandle);
-  editor.value = text;
+  markdownContent.value = text;
   parseHtmlPreview(text);
   restoreButton.style.display = 'none';
 }
 
 async function saveFile() {
-  var saveValue = editor.value;
+  var saveValue = markdownContent.value;
   if (!fileHandle) {
     try {
       fileHandle = await window.showSaveFilePicker();
       await idbKeyval.set('file', fileHandle);
     } catch (e) {
-      // might be user canceled
+      console.log('Error:', e)
     }
   }
   if (!fileHandle || !await verifyPermissions(fileHandle)) {
@@ -40,6 +68,7 @@ async function saveFile() {
   await writableStream.write(saveValue);
   await writableStream.close();
   restoreButton.style.display = 'none';
+  alert('Save successfully!')
 }
 
 async function verifyPermissions(handle) {
@@ -83,27 +112,11 @@ async function init() {
   });
   openButton.addEventListener('click', openFile);
   saveButton.addEventListener('click', saveFile);
+  expandButton.addEventListener('click', expandFile);
+  newButton.addEventListener('click', newFile);
 }
 
-function parseHtmlPreview(text) {
-  const htmlPreview = document.getElementById('html-preview');
-  const htmlContent = marked.parse(text);
-  htmlPreview.innerHTML = DOMPurify.sanitize(htmlContent, {USE_PROFILES: {html: true}});
-}
-
-editor.addEventListener('input', function() {
-  const markdownContent = document.getElementById('markdown-content');
-  const htmlPreview = document.getElementById('html-preview');
+markdownContent.addEventListener('input', function() {
   const htmlContent = marked.parse(markdownContent.value);
   htmlPreview.innerHTML = DOMPurify.sanitize(htmlContent, {USE_PROFILES: {html: true}});
-});
-
-expand.addEventListener('click', function () {
-  document.getElementById('editor').classList.toggle('distraction-free');
-  const expandMode = document.getElementById('expand-mode');
-  if (expandMode.innerText === 'Full Mode') {
-    expandMode.innerText = 'Minimize Mode';
-  } else {
-    expandMode.innerText = 'Full Mode';
-  }
 });

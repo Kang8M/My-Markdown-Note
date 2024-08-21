@@ -56,7 +56,7 @@ body {
   margin-bottom: 10px;
 }
 
-#open, #restore, #save {
+#open, #restore, #save, #new {
   background: #2e3440;
   color: #fff;
   border: none;
